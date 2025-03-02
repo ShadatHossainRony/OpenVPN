@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  ca-server:
+    build:
+      context: ./ca-server
+    container_name: ca-server
+    volumes:
+      - ./shared:/shared
+      - ./ca-server/config:/etc/openvpn/easy-rsa
+    environment:
+      - EASYRSA_REQ_COUNTRY=US
+      - EASYRSA_REQ_PROVINCE=California
+      - EASYRSA_REQ_CITY=San Francisco
+      - EASYRSA_REQ_ORG=My Organization
+      - EASYRSA_REQ_EMAIL=admin@example.com
+      - EASYRSA_REQ_OU=IT Department
+      - EASYRSA_KEY_SIZE=2048
+      - EASYRSA_CA_EXPIRE=3650
+      - EASYRSA_CERT_EXPIRE=1080
+    restart: unless-stopped
+    entrypoint: /entrypoint.sh
+
+  openvpn-server:
+    build:
+      context: ./openvpn-server
+    container_name: openvpn-server
+    volumes:
+      - ./shared:/shared
+      - ./openvpn-server/config:/etc/openvpn
+    ports:
+      - "1194:1194/udp"
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    devices:
+      - /dev/net/tun
+    depends_on:
+      - ca-server
+    entrypoint: /entrypoint.sh
+    environment:
+      - SERVER_NETWORK=10.8.0.0
+      - SERVER_NETMASK=255.255.255.0
+      - PUSH_ROUTES=10.10.0.0 255.255.0.0
+
+volumes:
+  shared:
+    driver: local

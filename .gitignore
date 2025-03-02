@@ -1,0 +1,8 @@
+node_modules
+*.cert
+*.key
+*.req
+ca-server/config/
+clients/
+shared/
+openvpn-server/config/
