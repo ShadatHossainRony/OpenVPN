@@ -1,9 +1,9 @@
 # OpenVPN Server with EasyRSA CA
-
-This project sets up a secure VPN service using OpenVPN and EasyRSA in a Docker Compose environment. It consists of two separate containers:
+VPNs provide a secure mean to communicate with services by encrypting the information and sending through a tunnel. As much important they are, VPNs are tedious to configure. Containerize them is another hassle. 
+This project sets up a secure VPN service using OpenVPN and EasyRSA in a Docker Compose environment Though it is done and tested on the LAN, it works on any remote servers also. It consists of two separate containers:
 
 1. **CA Server**: Manages the Certificate Authority for signing certificate requests
-2. **OpenVPN Server**: Provides the VPN service to LAN users
+2. **OpenVPN Server**: Provides the VPN service to LAN users(It can be changed to any server)
 
 ## Architecture
 
@@ -26,6 +26,10 @@ docker-compose up -d
 ```bash
 docker exec -it openvpn-server /etc/openvpn/generate_client.sh client1
 ```
+or 
+```run the script
+./generate_client.sh client_name
+```
 
 5. The client configuration file will be available at:
 
@@ -43,7 +47,7 @@ docker exec -it openvpn-server /etc/openvpn/generate_client.sh client1
 ## Network Configuration
 
 - VPN Network: 10.8.0.0/24 (configurable via environment variables)
-- Clients will have access to the LAN (192.168.0.0/16)
+- Clients will have access to the LAN (192.168.1.0/24)
 - DNS servers: 8.8.8.8 and 8.8.4.4 (Google DNS)
 
 ## Client Management
@@ -52,6 +56,10 @@ To add a new client:
 
 ```bash
 docker exec -it openvpn-server /etc/openvpn/generate_client.sh <client_name>
+```
+or 
+```run the script
+./generate_client.sh client_name
 ```
 
 To revoke a client certificate:
