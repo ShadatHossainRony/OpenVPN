@@ -41,7 +41,7 @@ services:
     environment:
       - SERVER_NETWORK=10.8.0.0
       - SERVER_NETMASK=255.255.255.0
-      - PUSH_ROUTES=10.10.0.0 255.255.0.0
+      - PUSH_ROUTES=192.168.1.0 255.255.255.0
 
 volumes:
   shared:
